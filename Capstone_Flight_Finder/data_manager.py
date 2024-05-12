@@ -1,7 +1,6 @@
 import requests
 import pandas as pd
 import os
-from flight_data import FlightData
 from requests.auth import HTTPBasicAuth
 
 
@@ -32,10 +31,11 @@ class DataManager:
 
         # Update local data
         new_row = [city, IATA, price] # New row to be added or renewed
+        # If data already in our table
         if city in self.flights_data['city'].values:
             city_data = self.flights_data[self.flights_data['city'] == city]
             row_id = city_data.index[0]
-        # Create a new entry
+        # Create a new entry if the city is not in the existing table
         else:
             row_id = self.flights_data.shape[0] + 2
         # Update dataframe
@@ -53,7 +53,8 @@ class DataManager:
                     'lowestPrice': price
                 }
         }
-        # Send PUT request so rows with missing data will be updated
+        # Send PUT request so rows with missing data will be updated or created
+        # if data is not in the table
         _ = requests.put(url=url, json=body, auth=self._authorization)
 
 
@@ -80,10 +81,3 @@ class DataManager:
 
         pass
 
-
-if __name__ == '__main__':
-    data_manager = DataManager()
-    flight_manager = FlightData()
-    city = 'Paris'
-    iata_code = flight_manager.get_iata_code(city)
-    data_manager.add_city(city, iata_code, 5000)

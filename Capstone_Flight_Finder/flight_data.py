@@ -142,10 +142,3 @@ class FlightData:
         response_json = response.json()
         return response_json['data']
 
-
-# for testing
-if __name__ == '__main__':
-    flight_data = FlightData()
-    date = '2024-05-03'
-    flights = flight_data.get_flight('MEX', 'TYO', date, 200)
-    print(flights)
